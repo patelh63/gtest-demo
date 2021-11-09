@@ -25,13 +25,13 @@ enable_testing()
 
 add_subdirectory(test)
 
-add_custom_target(
-	generate_mutants ALL
-	COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/mutator/GenerateMutants.py ${CMAKE_CURRENT_SOURCE_DIR}/mutator
-	BYPRODUCT ${CMAKE_CURRENT_SOURCE_DIR}/mutants
-)
+#add_custom_target(
+#	generate_mutants ALL
+#	COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/mutator/GenerateMutants.py ${CMAKE_CURRENT_SOURCE_DIR}/mutator
+#	BYPRODUCT ${CMAKE_CURRENT_SOURCE_DIR}/mutants
+#)
 
-add_dependencies(unit_tests generate_mutants)
+#add_dependencies(unit_tests generate_mutants)
 
 add_subdirectory(mutants)
 
