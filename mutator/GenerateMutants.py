@@ -14,9 +14,9 @@ class GenerateMutants():
             f.write('testing')
             quit()
     else:
-        file = 'config.ini'
+        config_file = 'config.ini'
         config = ConfigParser()
-        config.read(file)
+        config.read(config_file)
         mutants = config.options('Mutants')
         mutant_list = []
         active_mutants = []
