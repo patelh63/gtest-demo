@@ -1,23 +1,24 @@
-import re
-from MutatorClass import Mutator
 import os
+import sys
 from configparser import ConfigParser
 import shutil
+from mutant_dictionary import all_mutants
+from mutant_dictionary import all_mutant_keys
 import getfilename
-
 
 class GenerateMutants():
 
     if not os.path.exists('./config.ini'): #Config parser - From Drew's and Luke's Code
         print("Error: Config File does not exist")
-        with open('config.ini', 'w') as f:
+        with open('config.ini', 'w', encoding="utf-8") as f:
             f.write('testing')
-            quit()
+            sys.exit()
     else:
-        config_file = 'config.ini'
+        file = 'config.ini'
         config = ConfigParser()
-        config.read(config_file)
+        config.read(file)
         mutants = config.options('Mutants')
+        filename = "../CMakeLists.txt"
         mutant_list = []
         active_mutants = []
 
@@ -28,71 +29,11 @@ class GenerateMutants():
             if config.get('Mutants', x) == '1':
                 mutant_list.append(x) #Creates list of active mutants from config file
 
-        if "equality1" in mutant_list:
-            active_mutants.append(Mutator("==", "!=", "Equality1"))
-        if "equality2" in mutant_list:
-            active_mutants.append(Mutator("!=", "==", "Equality2"))
-        #################################################################################################################
-        if "logical1" in mutant_list:
-            active_mutants.append(Mutator("&&", "||", "Logical1"))
-        if "logical2" in mutant_list:
-            active_mutants.append(Mutator("[||][^ ]", "&&", "Logical2"))
-        if "logical3" in mutant_list:
-            active_mutants.append(Mutator("(?<!\|)\|(?!\|)", "&", "Logical3"))
-        if "logical4" in mutant_list:
-            active_mutants.append(Mutator("(?<!\&)\&(?!\&)","|", "Logical4"))
-        #################################################################################################################
-        if "arithmetic1" in mutant_list:
-            active_mutants.append(Mutator("[+]{2}","--", "Arithmetic1"))
-        if "arithmetic2" in mutant_list:
-            active_mutants.append(Mutator("[-]{2}", "++", "Arithmetic2"))
-        if "arithmetic3" in mutant_list:
-            active_mutants.append(Mutator("[\/][=]", "*=", "Arithmetic3"))
-        if "arithmetic4" in mutant_list:
-            active_mutants.append(Mutator("\*[=]", "\=", "Arithmetic4"))
-        if "arithmetic5" in mutant_list:
-            active_mutants.append(Mutator("%[=]", "*=", "Arithmetic5"))
-        if "arithmetic6" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\<>-])[*][=](?![+=*%\<>-])", "%=", "Arithmetic6"))
-        if "arithmetic7" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*\/-])\/(?![+=*\/-])", "*", "Arithmetic7"))
-        if "arithmetic8" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*\/-])\*(?![+=*\/-])", "/", "ArithmeticMultToDiv"))
-        if "arithmetic9" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*\/-])\*(?![+=*\/-])", "%", "Arithmetic9"))
-        if "arithmetic10" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\/-])\%(?![+=*%\/-])", "*", "Arithmetic10"))
-        if "arithmetic11" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*\/-])\+(?![+=*\/-])", "-", "ArithmeticPlusToMinus"))
-        if "arithmetic12" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*\/-])\-(?![+=*\/-])", "+", "Arithmetic12"))
-        if "arithmetic13" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\<>-])-=(?![+=*%\<>-])", "+=", "Arithmetic13"))
-        if "arithmetic14" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\<>-])\+=(?![+=*%\<>-])", "-=", "Arithmetic14"))
-        #################################################################################################################
-        if "string1" in mutant_list:
-            active_mutants.append(Mutator("\"[a-zA-Z\d\s~`!@#$%^&*()+=,.<>/?\';:\[\]\{\}\\-]*\"", "", "String1"))
-        #################################################################################################################
-        if "conditional1" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\<>-])<=(?![+=*%\<>-])", "<", "Conditional1"))
-        if "conditional2" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\<>-])>=(?![+=*%\<>-])", ">", "Conditional2"))
-        if "conditional3" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\<>-])\>(?![+=*%\<>-])", ">=", "Conditional3"))
-        if "conditional4" in mutant_list:
-            active_mutants.append(Mutator("(?<![+=*%\><-])\<(?![+=*%\><-])", "<=", "Conditional4"))
-        if "conditional5" in mutant_list:
-            active_mutants.append(Mutator("(?<=(if))\(.*\)(?!;)", "(false)", "Conditional5"))
-        if "conditional6" in mutant_list:
-            active_mutants.append(Mutator("(?<=(if))\(.*\)(?!;)", "(true)", "Conditional6"))
-        #################################################################################################################
-        if "boolean1" in mutant_list:
-            active_mutants.append(Mutator("(?<![+!*%;\/-])(true)(?![+=*%\/-])", "false", "Boolean1"))
-        if "boolean2" in mutant_list:
-            active_mutants.append(Mutator("(?<![+!*%;\/-])(false)(?![+=*%\/-])", "true", "Boolean2"))
+        for x in all_mutant_keys:
+            if x.lower() in mutant_list:
+                active_mutants.append(all_mutants[x])
 
-        if not (os.path.exists('../mutants')):
+        if not os.path.exists('../mutants'):
             os.mkdir('../mutants')
 
         for i in active_mutants:  #Creates folders for all active mutants
@@ -191,6 +132,7 @@ class GenerateMutants():
                 with open("../test/" + test, "r") as input:
                     with open(build_dir + "/test/" + test.replace(".cpp", "_" + i.get_name() + ".cpp"), "w+") as output:
                         for line in input:
-                            output.write(line.replace(mutation_headers[0], mutation_headers[0].replace(".h", "_" + i.get_name() + ".h")))
+                            modified_line = line.replace(mutation_targets[0].replace(".cpp", ""), mutation_targets[0].replace(".cpp", "_" + i.get_name()))
+                            output.write(modified_line.replace(mutation_headers[0], mutation_headers[0].replace(".h", "_" + i.get_name() + ".h")))
 
-
+        sys.exit()
