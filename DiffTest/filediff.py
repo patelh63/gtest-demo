@@ -8,7 +8,7 @@ with open('example_ArithmeticPlusToMinus.cpp') as f:
 
 hd = dl.HtmlDiff()
 
-diffs = hd.make_file(original_file, mutated_file, fromdesc='Source', todesc='Mutant', context=False, numlines=0)
+diffs = hd.make_file(original_file.split("\n"), mutated_file.split("\n"), fromdesc='Source', todesc='Mutant', context=False, numlines=0)
 
 with open('diff.html',"w+") as diff_file:
     diff_file.write(diffs)
