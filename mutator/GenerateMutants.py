@@ -94,15 +94,19 @@ class GenerateMutants():
             mutation_headers = getfilename.getHeaderFilenamesFromCMakeLists("../src/CMakeLists.txt")
             test_targets = getfilename.getFilenamesFromCMakeLists("../test/CMakeLists.txt")
 
-            with open("../src/" + mutation_targets[0], "r") as input:
-                with open(build_dir + "/src/" + mutation_targets[0].replace(".cpp", "_" + i.get_name() + ".cpp"), "w+") as output:
-                    for line in input:
-                        mutated_line = i.mutate(line)
-                        final_line = mutated_line.replace(mutation_headers[0], mutation_headers[0].replace(".h", "_" + i.get_name() + ".h"))
-                        output.write(final_line)
 
-            with open("../src/" + mutation_headers[0], "r") as input:
-                    with open(build_dir + "/src/" + mutation_headers[0].replace(".h", "_" + i.get_name() + ".h"), "w+") as output:
+            for target in mutation_targets:
+                with open("../src/" + target, "r") as input:
+                    with open(build_dir + "/src/" + target.replace(".cpp", "_" + i.get_name() + ".cpp"), "w+") as output:
+                        for line in input:
+                            mutated_line = i.mutate(line)
+                            for header in mutation_headers:
+                                final_line = mutated_line.replace(header, header.replace(".h", "_" + i.get_name() + ".h"))
+                            output.write(final_line)
+
+            for header in mutation_headers:
+                with open("../src/" + header, "r") as input:
+                    with open(build_dir + "/src/" + header.replace(".h", "_" + i.get_name() + ".h"), "w+") as output:
                         for line in input:
                             output.write(line)
 
@@ -110,7 +114,9 @@ class GenerateMutants():
                 with open("../test/" + test, "r") as input:
                     with open(build_dir + "/test/" + test.replace(".cpp", "_" + i.get_name() + ".cpp"), "w+") as output:
                         for line in input:
-                            modified_line = line.replace(mutation_targets[0].replace(".cpp", ""), mutation_targets[0].replace(".cpp", "_" + i.get_name()))
-                            output.write(modified_line.replace(mutation_headers[0], mutation_headers[0].replace(".h", "_" + i.get_name() + ".h")))
+                            for target in mutation_targets:
+                                modified_line = line.replace(target.replace(".cpp", ""), target.replace(".cpp", "_" + i.get_name()))
+                                for header in mutation_headers:
+                                    output.write(modified_line.replace(header, header.replace(".h", "_" + i.get_name() + ".h")))
 
         sys.exit()
