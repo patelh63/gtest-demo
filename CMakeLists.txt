@@ -31,5 +31,3 @@ execute_process(
 )
 
 add_subdirectory(mutants)
-
-

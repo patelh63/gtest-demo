@@ -70,6 +70,7 @@ class GenerateMutants():
                 f.write("    unit_tests_" + i.get_name() + "\n")
                 f.write("    example_add_" + i.get_name() + ".cpp\n")
                 f.write("    example_subtract_" + i.get_name() + ".cpp\n")
+                f.write("    example_equality_" + i.get_name() + ".cpp\n")
                 f.write("    )\n")
                 f.write("\n")
                 f.write("target_link_libraries(unit_tests_" + i.get_name() + "\n")
