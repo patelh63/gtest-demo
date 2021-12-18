@@ -68,9 +68,8 @@ class GenerateMutants():
             with open(build_dir + "/test/CMakeLists.txt", "w+") as f:
                 f.write("add_executable(\n")
                 f.write("    unit_tests_" + i.get_name() + "\n")
-                f.write("    example_add_" + i.get_name() + ".cpp\n")
-                f.write("    example_subtract_" + i.get_name() + ".cpp\n")
-                f.write("    example_equality_" + i.get_name() + ".cpp\n")
+                for testfile in getfilename.getFilenamesFromCMakeLists("../test/CMakeLists.txt"):
+                    f.write("    " + testfile.replace(".cpp", "_" + i.get_name() + ".cpp\n"))
                 f.write("    )\n")
                 f.write("\n")
                 f.write("target_link_libraries(unit_tests_" + i.get_name() + "\n")
