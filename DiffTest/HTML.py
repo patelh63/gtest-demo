@@ -9,9 +9,9 @@ html_template = """<html>
 <body>
 <h2>C++ Mutation Testing</h2>
 
-<p>Read Me File:</p>
+<p>Read Me File:<a href="../../PorcupinesMutator/README.md">README</a></p>
 <p>Mutation Test: <a href="diff.html">Results</a></p>
-<p>Mutants Used:<a href="Mutants Used.html">Mutants</a></p>
+<p>Mutants Used:<a href="../../PorcupinesMutator/config.ini">Mutants</a></p>
 <p>Gcovr:</p>
 </body>
 </html>
@@ -20,24 +20,4 @@ html_template = """<html>
 f.write(html_template)
 
 # close the file
-f.close()
-
-f = open('Mutants Used.html', 'w')
-html_template = """<html>
-<head>
-<title>Title</title>
-</head>
-<body>
-<h2>Mutants Used:</h2>
-<p>Key: </p>
-<p> 0 : Mutant was not used </p>
-<p> 1 : Mutant was used </p>
-<div><p><object data="../../gtest-demo/mutator/config.ini"></object></p></div>
-<p></p>
-<a href="Mutation Testing.html">Back</a></p>
-<script src="config.ini"></script>
-</body>
-</html>
-"""
-f.write(html_template)
 f.close()
