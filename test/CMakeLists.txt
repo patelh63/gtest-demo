@@ -13,6 +13,8 @@ add_executable(
     example_add.cpp
     example_subtract.cpp
     example_equality.cpp
+    example_iterate.cpp
+    example_decrement.cpp
     )
 
 target_link_libraries(unit_tests
