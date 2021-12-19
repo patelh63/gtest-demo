@@ -5,6 +5,16 @@ import shutil
 from mutant_dictionary import all_mutants
 from mutant_dictionary import all_mutant_keys
 import getfilename
+import re
+
+def containsMutant(file, mutant):
+    reg = re.compile(mutant)
+    with open(file, "r") as f:
+        if re.search(reg, f.read()):
+            return True
+        else:
+            return False
+    close()
 
 class GenerateMutants():
 
@@ -90,9 +100,25 @@ class GenerateMutants():
             with open('../mutants/CMakeLists.txt', "a+") as f:
                 f.write("add_subdirectory(" + i.get_name() + ")\n")
 
-            mutation_targets = getfilename.getFilenamesFromCMakeLists("../src/CMakeLists.txt")
+            mutation_targets = getfilename.getFilenamesFromCMakeLists("../src/CMakeLists.txt") #File
             mutation_headers = getfilename.getHeaderFilenamesFromCMakeLists("../src/CMakeLists.txt")
             test_targets = getfilename.getFilenamesFromCMakeLists("../test/CMakeLists.txt")
+
+            for target in mutation_targets:
+                for mutant in active_mutants:
+                    if not containsMutant('../src/' + target, mutant.get_regex()):
+                        active_mutants.remove(mutant)
+                        print("The file does not contain " + mutant.get_name())
+                    else:
+                        with open("../src/" + target, "r") as input:
+                            with open(build_dir + "/src/" + target.replace(".cpp", "_" + i.get_name() + ".cpp"),
+                                      "w+") as output:
+                                for line in input:
+                                    mutated_line = i.mutate(line)
+                                    for header in mutation_headers:
+                                        final_line = mutated_line.replace(header, header.replace(".h",
+                                                                                                 "_" + i.get_name() + ".h"))
+                                        output.write(final_line)
 
             with open("../src/" + mutation_targets[0], "r") as input:
                 with open(build_dir + "/src/" + mutation_targets[0].replace(".cpp", "_" + i.get_name() + ".cpp"), "w+") as output:
