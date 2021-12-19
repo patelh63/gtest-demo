@@ -1,2 +1,2 @@
-with open('test_write.txt',"w+") as f:
+with open('test.html',"w+") as f:
         f.write("test")
