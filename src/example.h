@@ -13,3 +13,5 @@ double iterate_number(double f1);
 double decrement_number(double f1);
 
 double divideEquals_number(double f1, double f2);
+
+double multiEquals_number(double f1, double f2);

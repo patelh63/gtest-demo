@@ -16,6 +16,7 @@ add_executable(
     example_iterate.cpp
     example_decrement.cpp
     example_divideEquals.cpp
+    example_multiEquals.cpp
     )
 
 target_link_libraries(unit_tests
