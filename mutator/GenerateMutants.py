@@ -19,7 +19,7 @@ def containsMutant(file, mutant):
 class GenerateMutants():
 
     if not os.path.exists('./config.ini'): #Config parser - From Drew's and Luke's Code
-        print("Error: Config File does not exist")
+        print("Error: Config File does not existt")
         with open('config.ini', 'w', encoding="utf-8") as f:
             f.write('testing')
             sys.exit()
